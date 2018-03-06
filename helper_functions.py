@@ -79,6 +79,7 @@ def overall_sentiment(row):
 def get_final_df():
     df = merge_id()
     df['num_positive_words'] = df.apply(count_positive, axis=1)
-    df['num_negative words'] = df.apply(count_negative, axis=1)
+    df['num_negative_words'] = df.apply(count_negative, axis=1)
     df['overall_sentiment'] = df.apply(overall_sentiment, axis=1)
     return df
+
