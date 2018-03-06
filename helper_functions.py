@@ -8,6 +8,7 @@ from nltk.corpus import stopwords, words
 from nltk.tokenize import word_tokenize
 from collections import Counter
 from textblob import TextBlob
+from nltk import FreqDist
 
 # Load data
 business_data = pd.read_csv('./data/yelp_business.csv')
@@ -82,4 +83,29 @@ def get_final_df():
     df['num_negative_words'] = df.apply(count_negative, axis=1)
     df['overall_sentiment'] = df.apply(overall_sentiment, axis=1)
     return df
+
+def aggregate_df(df):
+    df1 = df[['business_id', 'stars', 'num_positive_words', 'num_negative_words', 'overall_sentiment']]
+    df1 = df1.groupby('business_id').agg({'stars': 'first', 'num_positive_words':'sum', 'num_negative_words': 'sum', 'overall_sentiment': 'sum'}).reset_index()
+    return df1
+
+def top_ten(df):
+    string = (' '.join(df['text']))
+    fdist = FreqDist(process_string(string))
+    return fdist.most_common(10)
+
+def top_fifty(df):
+    string = (' '.join(df['text']))
+    fdist = FreqDist(process_string(string))
+    return fdist.most_common(50)
+
+def top_hundred(df):
+    string = (' '.join(df['text']))
+    fdist = FreqDist(process_string(string))
+    return fdist.most_common(100)
+
+def top_twenty(df):
+    string = (' '.join(df['text']))
+    fdist = FreqDist(process_string(string))
+    return fdist.most_common(20)
 
