@@ -89,23 +89,24 @@ def aggregate_df(df):
     df1 = df1.groupby('business_id').agg({'stars': 'first', 'num_positive_words':'sum', 'num_negative_words': 'sum', 'overall_sentiment': 'sum'}).reset_index()
     return df1
 
-def top_ten(df):
-    string = (' '.join(df['text']))
-    fdist = FreqDist(process_string(string))
-    return fdist.most_common(10)
-
-def top_fifty(df):
-    string = (' '.join(df['text']))
-    fdist = FreqDist(process_string(string))
-    return fdist.most_common(50)
-
 def top_hundred(df):
     string = (' '.join(df['text']))
     fdist = FreqDist(process_string(string))
     return fdist.most_common(100)
 
-def top_twenty(df):
-    string = (' '.join(df['text']))
-    fdist = FreqDist(process_string(string))
-    return fdist.most_common(20)
+def get_tips(list, data):
+    pd.set_option('display.max_colwidth', -1)
+    new = pd.DataFrame()
+    for word in list:
+        df1 = data[['business_id', 'text', 'stars']][data['text'].str.contains(word)]
+        df1 = df1.groupby('stars').agg({'business_id': 'first', 'text': 'first'}).reset_index()
+        df1['word'] = word
+        new = new.append(df1, ignore_index=True)
+    return new
+
+def top_businesses_by_tip(data):
+    df1 = data[['business_id', 'text','state']]
+    df1 = df1.groupby('business_id').agg({'state': len, 'text': lambda x: ' '.join(x)}).reset_index().sort_values(by=['state'], ascending=False)
+    df1.rename(columns={'state': 'tip_count'}, inplace=True)
+    return df1.head(n=100)
 
