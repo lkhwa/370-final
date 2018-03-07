@@ -104,9 +104,12 @@ def get_tips(list, data):
         new = new.append(df1, ignore_index=True)
     return new
 
-def top_businesses_by_tip(data):
-    df1 = data[['business_id', 'text','state']]
-    df1 = df1.groupby('business_id').agg({'state': len, 'text': lambda x: ' '.join(x)}).reset_index().sort_values(by=['state'], ascending=False)
-    df1.rename(columns={'state': 'tip_count'}, inplace=True)
+def top_businesses_by_tip(data, word_list):
+    pd.set_option('max_colwidth',40)
+    df1 = data[['business_id', 'text','state', 'stars']]
+    df1 = df1.groupby('business_id').agg({'state': len, 'text': lambda x: ' '.join(x), 'stars': 'mean'}).reset_index().sort_values(by=['state'], ascending=False)
+    df1.rename(columns={'state': 'tip_count', 'stars': 'rating'}, inplace=True)
+    for word in word_list:
+        df1[word] = df1['text'].apply(lambda text: text.count(word))
     return df1.head(n=100)
 
