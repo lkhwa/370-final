@@ -67,3 +67,20 @@ def top_businesses_by_tip(data, word_list):
         df1[word] = df1['text'].apply(lambda text: text.count(word))
     return df1.head(n=100)
 
+# Returns a barchart that shows the distribution of star ratings in the Coffee & Tea business category
+def ratings_distribution(df):
+    x = df['stars'].value_counts().sort_index()
+    fig, ax = plt.subplots(figsize=(13,8))
+    fig.suptitle("Stars Distribution for Coffee & Tea Category", fontsize=16)
+    ax.set_ylabel('Number of Businesses', fontsize=18)
+    ax.set_xlabel('Stars (Ratings)', fontsize=18)
+    sns.barplot(x.index, x.values)
+    
+    rects = ax.patches
+    labels = x.values
+    for rect, label in zip(rects, labels):
+        height = rect.get_height()
+        ax.text(rect.get_x() + rect.get_width()/2, height + 5, label, ha='center', va='bottom')
+    
+    plt.show()
+
