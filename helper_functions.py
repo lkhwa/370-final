@@ -6,9 +6,10 @@ import matplotlib
 import re 
 from nltk.corpus import stopwords, words
 from nltk.tokenize import word_tokenize
-from collections import Counter
-from textblob import TextBlob
 from nltk import FreqDist
+from os import path
+from PIL import Image
+from wordcloud import WordCloud
 
 # Load data
 business_data = pd.read_csv('./data/yelp_business.csv')
@@ -82,5 +83,24 @@ def ratings_distribution(df):
         height = rect.get_height()
         ax.text(rect.get_x() + rect.get_width()/2, height + 5, label, ha='center', va='bottom')
     
+    plt.show()
+
+def create_wordcloud(word_list):
+    words = [x[0] for x in word_list]
+    d = path.dirname("__file__")
+
+    # read the mask image
+    coffee_mask = np.array(Image.open(path.join(d, "mask.png")))
+
+    # generate word cloud
+    wc = WordCloud(background_color="white", max_words=200, mask=coffee_mask)
+    wc.generate(str(words))
+
+    # store to file
+    wc.to_file(path.join(d, "coffee_wordcloud.png"))
+
+    # show
+    plt.imshow(wc, interpolation='bilinear')
+    plt.axis("off")
     plt.show()
 
