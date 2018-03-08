@@ -14,6 +14,11 @@ from wordcloud import WordCloud
 # Load data
 business_data = pd.read_csv('./data/yelp_business.csv')
 tip_data = pd.read_csv('./data/yelp_tip.csv')
+top_100_words = pd.read_csv('./top_100_words.csv')
+
+def top_100_words_all():
+    df = top_100_words.replace(np.nan, '', regex=True)
+    return df
 
 def business_data_head():
     return business_data.head()
@@ -51,6 +56,7 @@ def top_hundred(df):
 # This function is for tip analysis purpose
 # For each word in the list, get an example of tip (which contains the word) for each level of star rating
 def get_tips(list, df):
+    pd.set_option("display.max_rows",124)
     pd.set_option('display.max_colwidth', -1)
     new = pd.DataFrame()
     for word in list:
